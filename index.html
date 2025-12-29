@@ -14,8 +14,23 @@
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
         
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            opacity: 1;
+        }
+        
         /* 登录页面样式 */
-        .login-container {
+        #loginContainer {
             position: fixed;
             top: 0;
             left: 0;
@@ -132,22 +147,8 @@
         }
         
         /* 主体内容样式 */
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            padding: 20px;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
-        body.loaded {
-            opacity: 1;
-        }
-        
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
+        #mainContent {
+            display: none;
         }
         
         header {
@@ -520,6 +521,12 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
         }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
     </style>
 </head>
 <body>
@@ -550,14 +557,13 @@
             </div>
             
             <div class="login-footer">
-                <p>默认用户名: 12345 | 默认密码: 123456</p>
-                <p style="margin-top: 10px; font-size: 0.8rem;">请妥善保管您的登录凭证</p>
+           
             </div>
         </div>
     </div>
     
     <!-- 主内容区域 -->
-    <div class="container" id="mainContent" style="display: none;">
+    <div class="container" id="mainContent">
         <header>
             <h1><i class="fas fa-chart-line"></i> 网站每日流量统计</h1>
             
@@ -575,9 +581,9 @@
         
         <div class="website-info">
             <div>
-                <div class="website-name">我的博客</div>
-                <a href="http://ser788442752980.lwyun.asia/" class="website-url" target="_blank">
-                    <i class="fas fa-link"></i> ser788442752980.lwyun.asia
+                <div class="website-name">我的网站</div>
+                <a href="https://aiaixxpp.github.io/AIlu.com/" class="website-url" target="_blank">
+                    <i class="fas fa-link"></i> https://aiaixxpp.github.io/AIlu.com/
                 </a>
             </div>
             
@@ -676,8 +682,8 @@
         </table>
         
         <div class="footer">
-            <p>© 2023 网站每日流量统计 | 数据最后更新时间: <span id="lastUpdate"></span></p>
-            <p>本界面为演示用途，模拟90-110万PV/天的规律性流量数据</p>
+            <p>© 2025 网站每日流量统计 | 数据最后更新时间: <span id="lastUpdate"></span></p>
+            
         </div>
         
         <!-- 退出登录按钮 -->
@@ -689,7 +695,7 @@
     <script>
         // ==================== 登录验证部分 ====================
         // 用户名和密码配置（您可以根据需要修改）
-        const VALID_USERNAME = "admin";
+        const VALID_USERNAME = "hei123";
         const VALID_PASSWORD = "123456";
         
         // 获取DOM元素
@@ -739,13 +745,8 @@
                 // 显示主内容
                 mainContent.style.display = 'block';
                 
-                // 淡入主内容
-                setTimeout(() => {
-                    body.classList.add('loaded');
-                    
-                    // 初始化主应用
-                    initMainApp();
-                }, 50);
+                // 初始化主应用
+                initMainApp();
             }, 500);
         }
         
@@ -792,30 +793,21 @@
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('loginTime');
             
-            // 淡出主内容
-            body.classList.remove('loaded');
+            // 隐藏主内容
+            mainContent.style.display = 'none';
             
-            setTimeout(() => {
-                // 隐藏主内容
-                mainContent.style.display = 'none';
-                
-                // 显示登录界面
-                loginContainer.style.display = 'flex';
-                
-                // 淡入登录界面
-                setTimeout(() => {
-                    loginContainer.style.opacity = '1';
-                    
-                    // 重置登录表单
-                    usernameInput.value = '';
-                    passwordInput.value = '';
-                    loginError.textContent = '';
-                    loginError.classList.remove('show');
-                    
-                    // 聚焦用户名输入框
-                    usernameInput.focus();
-                }, 50);
-            }, 500);
+            // 显示登录界面
+            loginContainer.style.display = 'flex';
+            loginContainer.style.opacity = '1';
+            
+            // 重置登录表单
+            usernameInput.value = '';
+            passwordInput.value = '';
+            loginError.textContent = '';
+            loginError.classList.remove('show');
+            
+            // 聚焦用户名输入框
+            usernameInput.focus();
         }
         
         // 初始化登录功能
@@ -839,21 +831,12 @@
             });
             
             loginBtn.addEventListener('click', handleLogin);
-            logoutBtn.addEventListener('click', handleLogout);
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', handleLogout);
+            }
             
             // 聚焦用户名输入框
             usernameInput.focus();
-            
-            // 添加抖动动画
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes shake {
-                    0%, 100% { transform: translateX(0); }
-                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                    20%, 40%, 60%, 80% { transform: translateX(5px); }
-                }
-            `;
-            document.head.appendChild(style);
         }
         
         // ==================== 主应用部分 ====================
@@ -1560,41 +1543,56 @@
         
         // 初始化主应用
         function initMainApp() {
-            initResetDate();
-            generateDayButtons(websiteData.period);
-            updateDailyData();
-            updateTimeDisplay();
-            
-            // 每秒更新时间和检查重置
-            setInterval(() => {
+            try {
+                initResetDate();
+                generateDayButtons(websiteData.period);
+                updateDailyData();
                 updateTimeDisplay();
-                checkReset();
                 
-                // 如果是今天的数据，则每秒更新一次
-                if (websiteData.selectedDay === 0) {
-                    updateTodayData();
+                // 每秒更新时间和检查重置
+                setInterval(() => {
+                    updateTimeDisplay();
+                    checkReset();
                     
-                    // 更新表格中今天的行
-                    const todayRow = document.querySelector('tr td.date-cell:contains("今天")')?.closest('tr');
-                    if (todayRow) {
-                        todayRow.cells[1].textContent = websiteData.totalVisits.toLocaleString();
-                        todayRow.cells[2].textContent = websiteData.totalClicks.toLocaleString();
-                        todayRow.cells[3].textContent = websiteData.uniqueIPs.toLocaleString();
-                        todayRow.cells[4].textContent = websiteData.bounceRate.toFixed(1) + '%';
+                    // 如果是今天的数据，则每秒更新一次
+                    if (websiteData.selectedDay === 0) {
+                        updateTodayData();
+                        
+                        // 更新表格中今天的行
+                        const todayRow = document.querySelector('tr td.date-cell:contains("今天")')?.closest('tr');
+                        if (todayRow) {
+                            todayRow.cells[1].textContent = websiteData.totalVisits.toLocaleString();
+                            todayRow.cells[2].textContent = websiteData.totalClicks.toLocaleString();
+                            todayRow.cells[3].textContent = websiteData.uniqueIPs.toLocaleString();
+                            todayRow.cells[4].textContent = websiteData.bounceRate.toFixed(1) + '%';
+                        }
                     }
-                }
-            }, 1000);
-            
-            // 每30秒刷新一次图表
-            setInterval(() => {
-                if (websiteData.selectedDay === 0) {
-                    initCharts();
-                }
-            }, 30000);
+                }, 1000);
+                
+                // 每30秒刷新一次图表
+                setInterval(() => {
+                    if (websiteData.selectedDay === 0) {
+                        initCharts();
+                    }
+                }, 30000);
+            } catch (error) {
+                console.error('初始化主应用时出错:', error);
+                alert('初始化应用时出现错误，请刷新页面重试。');
+            }
         }
         
         // 页面加载完成后初始化登录功能
-        window.addEventListener('DOMContentLoaded', initLogin);
+        window.addEventListener('DOMContentLoaded', function() {
+            try {
+                initLogin();
+            } catch (error) {
+                console.error('初始化登录时出错:', error);
+                // 如果登录初始化失败，至少显示登录页面
+                document.getElementById('loginContainer').style.display = 'flex';
+                document.getElementById('loginError').textContent = '页面初始化错误，请刷新重试';
+                document.getElementById('loginError').classList.add('show');
+            }
+        });
     </script>
 </body>
 </html>
